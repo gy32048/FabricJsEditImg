@@ -1,0 +1,204 @@
+<template>
+  <div class="app-container">
+    <!-- <fbutton width="120px" ref="saveBtn" value="生产pdf" style="top:305px;"></fbutton> -->
+    <!--    <fbutton  width="120px"  value="转      PDF" style="top:355px;"></fbutton> -->
+    <!-- <button @click="test">测试</button> -->
+    <div style="width: 100%" class="chassis-div">
+      <table
+        style="width: 100%;"
+        align="center"
+        cellpadding="1"
+        cellspacing="0"
+        border="1"
+        bordercolor="#000000">
+        <tbody style="font-size: 18px;">
+          <tr >
+            <td colspan="12" style="padding: 5px;">
+              <div class="pdf-container pdf-save" id="pdfDom">
+                <table
+                  align="center"
+                  style="width: 100%; font-size: 16px;"
+                  cellpadding="1"
+                  cellspacing="0"
+                  border="1"
+                  bordercolor="#000000">
+                  <tbody>
+                    <tr>
+                      <td colspan="12">
+                        <!-- <div id="fabtest" v-show="false"> -->
+                        <div>
+                          <fabric-pic :height="600" style="page-break-after:always"></fabric-pic>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>
+
+<script>
+import FabricPic from './FabricPic'
+import layer from "layui-layer";
+export default {
+  name: 'TableModel',
+  components: {
+    FabricPic
+  },
+  computed: {
+
+  },
+  data () {
+    return {
+      printModel: false,
+      baseInfo: {
+        pn: '',
+        name: '',
+        process: '',
+        monitorGrade: '',
+        updateKey: '',
+        station: '',
+        code: '',
+        pageNum: '第1页/共10页',
+        version: 'A0'
+      },
+      process: ['welding', 'benching', 'bending'],
+      isModalVisible: false,
+      otherInfos: [[], [], [], [], []],
+      editeModel: true,
+      allAlign: null,
+      count: 0,
+      dialogVisible: false,
+      options: [1, 2, 3, 4, 5, 6],
+      form: {
+        name: '管控等级',
+        value: '管控等级',
+        colspan: 1,
+        rowspan: 1,
+        color: 'black',
+        width: '8%',
+        src: ''
+      },
+      modeltrs: [[
+         // { id: 0,  value: '管控等级', rowspan: 1, colspan: 2, color: 'black', src: ''},
+         // { id: 1,   value: '', rowspan: 1, colspan: 1, color: 'black', src: ''},
+      ]],
+      modelAddtrs: [[]]
+    }
+  },
+  created () {
+  },
+  methods: {
+    // test(){
+    //   layer.open({
+    //     type: 1,
+    //     anim: 2,
+    //     title: '很多时候，我们想最大化看，比如像这个页面。',
+    //     shadeClose: true,
+    //     shade: false,
+    //     cache: false,
+    //     moveOut: true,
+    //     area: ['100%', '100%'],
+    //     content: $("#fabtest"),
+    //     success: function(layero,index){
+    //       layer.full(index);
+    //     },
+    //     btn: ['确定', '关闭'],
+    //     yes: function (index) {
+    //       layer.close(index);
+    //     },
+    //     cancel: function (index) {
+    //       //右上角关闭回调
+    //       layer.close(index);
+    //     }
+    //   });
+    // },
+    doPrint () {
+      this.printModel = true
+      setTimeout(() => {
+        this.$nextTick(() => { this.getPdf() })
+      }, 1000)
+    },
+    addTableModel () {
+      for (const tr of this.modeltrs) {
+        let spans = 0
+        for (const td of tr) {
+          spans += td.colspan
+        }
+        if (spans < 12) {
+          tr.push({ name: this.form.name, value: this.form.value, colspan: this.form.colspan, color: this.form.color, src: this.form.src })
+          tr.push({ name: this.form.name, value: '', colspan: this.form.colspan, color: this.form.color, src: this.form.src })
+          if (spans + this.form.colspan * 2 === 12) {
+            this.modeltrs.push([])
+          }
+          break
+        }
+      }
+      this.dialogVisible = false
+    },
+    countSpan (tds, index) {
+      if (index === -1) return 0
+      let res = 0
+      for (let i = 0; i < index; i++) {
+        console.log(tds[i])
+        res += tds[i].colspan
+      }
+      console.log(res)
+      return res
+    }
+  }
+}
+</script>
+<style>
+  .pdf-container{
+    font-family: "楷体", Helvetica, sans-serif;
+    color: black;
+    font-weight: bold;
+    margin: 0 auto;
+    border-collapse: collapse;
+    text-align: center;
+    width: 100%;
+  }
+  .content-p{
+    margin: 0px;
+    word-wrap:break-word;
+    word-break:normal;
+  }
+  .chassis-div{
+    background-color: white;
+  }
+  .chassis-div table{
+    margin: 0 auto;
+    border-collapse: collapse;
+    text-align: center;
+    width: 100%;
+
+  }
+  .chassis-div input{
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  .chassis-div .table-btn{
+    width: 100%;
+    height: 100%;
+    border: none;
+    margin: 0px;
+  }
+  td{
+    padding: 0px;
+    text-align: center;
+  }
+  .fill-select{
+    margin: 0px;
+    width: 100%;
+  }
+  .company-title{
+    font-size: 36px;
+  }
+</style>

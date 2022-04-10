@@ -1,0 +1,1261 @@
+<template>
+  <div>
+    <div :style="MenuStyle" id="clibdiv" @paste="getClipboardFiles($event)" @copy="getCopyData($event)" >
+      <div><svg class="icon" :style="iconDivStyle" :class="{'active':drawType=='text'}" id="text" aria-hidden="true" @click="Draw('text')"><use xlink:href="#icon-ali-text"></use></svg>
+      </div>
+      <div><svg class="icon" data-toolbar-style="common" :style="iconDivStyle" :class="{'active':drawType=='line'}" id="line" aria-hidden="true" @click="Draw('line')"><use xlink:href="#icon-ali-line"></use></svg>
+      </div>
+      <div><svg class="icon" data-toolbar-style="common" :style="iconDivStyle" :class="{'active':drawType=='dotted-line'}" id="dotted-line" aria-hidden="true" @click="Draw('dotted-line')"><use xlink:href="#icon-ali-line-dotted"></use></svg>
+      </div>
+      <div><svg class="icon" data-toolbar-style="common" :style="iconDivStyle" :class="{'active':drawType=='arrow'}" id="arrow" aria-hidden="true" @click="Draw('arrow')"><use xlink:href="#icon-ali-arrow-right-up-line"></use></svg>
+      </div>
+      <div><svg class="icon" data-toolbar-style="common" :style="iconDivStyle" :class="{'active':drawType=='circle'}" id="circle" aria-hidden="true" @click="Draw('circle')"><use xlink:href="#icon-ali-checkbox-blank-circle-line"></use></svg>
+      </div>
+      <div><svg class="icon" data-toolbar-style="common" :style="iconDivStyle" :class="{'active':drawType=='ellipse'}" id="ellipse" aria-hidden="true" @click="Draw('ellipse')"><use xlink:href="#icon-ali-tx-tuoyuanxing"></use></svg>
+      </div>
+      <div><svg class="icon" data-toolbar-style="common" :style="iconDivStyle" :class="{'active':drawType=='rect'}" id="rect" aria-hidden="true" @click="Draw('rect')"><use xlink:href="#icon-ali-tx-changfangxing"></use></svg>
+      </div>
+      <div><svg class="icon" :style="iconDivStyle" :class="{'active':drawType=='dialog'}" id="dialog" aria-hidden="true" @click="Draw('dialog')"><use xlink:href="#icon-ali-duihuakuang"></use></svg>
+      </div>
+      <div><svg class="icon" :style="iconDivStyle" :class="{'active':drawType=='spacearrow'}" id="spacearrow" aria-hidden="true" @click="Draw('spacearrow')"><use xlink:href="#icon-ali-right"></use></svg>
+      </div>      
+      <div><svg class="icon" :style="iconDivStyle" :class="{'active':drawType=='color-1'}" id="color-1" aria-hidden="true" @click="colorInputClick($event, 1,0)"><use xlink:href="#icon-ali-jurassic_font-color"></use></svg>
+      </div>
+      <div><svg class="icon" :style="iconDivStyle" :class="{'active':drawType=='color-0'}" id="color-0" aria-hidden="true" @click="colorInputClick($event, 0,0)"><use xlink:href="#icon-ali-dixiayanse"></use></svg>
+      </div>
+      <div><svg class="icon" :style="iconDivStyle" :class="{'active':drawType=='color-2'}" id="color-2" aria-hidden="true" @click="colorInputClick($event, 2,0)"><use xlink:href="#icon-ali-jurassic_border-linecolor"></use></svg>
+      </div>
+      <!-- <div><svg class="icon" :style="iconDivStyle" id="download" aria-hidden="true" @click="ObjToJson()"><use xlink:href="#icon-ali-xiazai"></use></svg>
+      </div>
+      <div><svg class="icon" :style="iconDivStyle" id="upload" aria-hidden="true" @click="JsonToObj()"><use xlink:href="#icon-ali-shangchuan-"></use></svg>
+      </div> -->
+            <div><svg class="icon" :style="iconDivStyle" :class="{'active':drawType=='round-1'}" id="round-1" aria-hidden="true" @click="DrawRound('round-1')"><use xlink:href="#icon-ali-round_1"></use></svg>
+      </div>
+            <div><svg class="icon" :style="iconDivStyle" :class="{'active':drawType=='round-2'}" id="round-2" aria-hidden="true" @click="Draw('round-2')"><use xlink:href="#icon-ali-round_2"></use></svg>
+      </div>
+            <div><svg class="icon" :style="iconDivStyle" :class="{'active':drawType=='round-3'}" id="round-3" aria-hidden="true" @click="Draw('round-3')"><use xlink:href="#icon-ali-round_3"></use></svg>
+      </div>
+            <div><svg class="icon" :style="iconDivStyle" :class="{'active':drawType=='round-4'}" id="round-4" aria-hidden="true" @click="Draw('round-4')"><use xlink:href="#icon-ali-round_4"></use></svg>
+      </div>
+            <div><svg class="icon" :style="iconDivStyle" :class="{'active':drawType=='round-5'}" id="round-5" aria-hidden="true" @click="Draw('round-5')"><use xlink:href="#icon-ali-round_5"></use></svg>
+      </div>
+            <div><svg class="icon" :style="iconDivStyle" :class="{'active':drawType=='round-6'}" id="round-6" aria-hidden="true" @click="Draw('round-6')"><use xlink:href="#icon-ali-round_6"></use></svg>
+      </div>
+            <div><svg class="icon" :style="iconDivStyle" :class="{'active':drawType=='round-7'}" id="round-7" aria-hidden="true" @click="Draw('round-7')"><use xlink:href="#icon-ali-round_7"></use></svg>
+      </div>
+            <div><svg class="icon" :style="iconDivStyle" :class="{'active':drawType=='round-8'}" id="round-8" aria-hidden="true" @click="Draw('round-8')"><use xlink:href="#icon-ali-round_8"></use></svg>
+      </div>
+            <div><svg class="icon" :style="iconDivStyle" :class="{'active':drawType=='round-9'}" id="round-9" aria-hidden="true" @click="Draw('round-9')"><use xlink:href="#icon-ali-round_9"></use></svg>
+      </div>
+      <div style="float: left; margin-right:5px; width: auto; height: auto; display: block; font-style: italic;">
+        <select @change="SelectBorderSize($event)">
+          <option value="2">--边框粗细--</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="4">4</option>
+        </select>
+      </div>
+      <div style=" float: left; margin-right:5px; width: auto; height: auto; display: block; font-style: italic;">
+        <select @change="SelectTextSize($event)">
+          <option value="24">--字体粗细--</option>
+          <option value="16">16</option>
+          <option value="24">24</option>
+          <option value="36">36</option>
+        </select>
+      </div>
+      <span style="margin-top: 5px; float: right; margin-right:5px; width: auto; height: auto; display: block; font-style: italic;">复制图片后点击此处，按Ctrl+V复制图片</span>
+      <div><svg class="icon" :style="iconDivStyle" aria-hidden="true" @click="deleteItem"><use xlink:href="#icon-ali-delete_fill"></use></svg></div>
+    </div>
+    <div class="canvas-box" :style="canvasDivStyle" @contextmenu.stop.prevent="onContextmenu">
+      <canvas style="width: 1122px;border:1px solid #999;" :width="width" :height="height" id="c"></canvas>
+    </div>
+    <a-modal
+            :title="colorType"
+            style="top: calc(50%);"
+            width="300px"
+            :visible="colorSelectShow"
+            :mask="false"
+            @ok="confirmColor"
+            @cancel="colorSelectShow=false;drawType=null">
+      <div>
+        <input v-model="colorTmp" type="text" style="width: 130px;margin-left: 10px; margin-bottom: 10px;"/>
+        <!-- <input v-model="colorTmp" type="color" style="width: 130px; margin-left: 10px;"/> -->
+      </div>
+      <div style="margin-top: 15px;margin-bottom: 20px;">
+        <input
+                :key="color"
+                type="button"
+                class="color-div"
+                :style="{backgroundColor: color}"
+
+                v-for="color in colors"
+                @click="changeColor(color)"></div>
+    </a-modal>
+    <!-- <div id="user-toolbar-options">
+      <a href="#" v-for="color in colors" :key="color"><input :style="{backgroundColor: color}" type="button"  class="color-div" @click="changeColor(color)"></a>
+    </div> -->
+  </div>
+</template>
+
+<script>
+  // A4:794×1123 A3:1123x1588
+  import { fabric } from 'fabric'
+  import ImageCompressor from 'image-compressor.js'
+  const width = window.innerWidth
+  const height = window.innerHeight
+  HTMLElement.prototype.pressKey = function (code) {
+    var evt = document.createEvent('UIEvents')
+    evt.keyCode = code
+    evt.initEvent('keydown', true, true)
+    this.dispatchEvent(evt)
+  }
+
+  export default {
+    name: 'ComplexTable',
+    components: {
+    },
+    props: {
+      height: {
+        type: Number,
+        default: 1200
+      },
+      width: {
+        type: Number,
+        default: 1400
+      }
+    },
+    watch: {
+      'bcolor': function (n, o) {
+        console.log(this.nowFabricItem)
+        if (this.nowFabricItem.type === 'textbox') {
+          this.nowFabricItem.set({ backgroundColor: n })
+        } else {
+          this.nowFabricItem.set({ fill: n })
+        }
+
+        this.canvas.renderAll()
+      },
+      'fcolor': function (n, o) {
+        console.log(this.nowFabricItem.type)
+        if (this.nowFabricItem.type === 'textbox') {
+          this.nowFabricItem.set({ fill: n })
+          this.canvas.renderAll()
+        }
+      },
+      'scolor': function (n, o) {
+        console.log(this.nowFabricItem.type)
+        this.nowFabricItem.set({ stroke: n })
+        this.canvas.renderAll()
+      },
+      'drawType':function(n,o){
+        // console.log(n)
+        if(n!=null){
+          this.canvas.skipTargetFind = true
+          this.canvas.selection = false
+        }else{
+          this.canvas.skipTargetFind = false
+          this.canvas.selection = true
+        }
+      }
+    },
+    data () {
+      return {
+        colorSetIndex: 0,
+        colorTmp: '',
+        colors: ['#000000','#FFFF00','#0000FF', '#FF00FF','#006030', '#FFFFFF','#CC00FF','#FF0000'],
+        colorSelectShow: false,
+        colorSelectTop: '50%',
+        colorSelectLeft: '50%',
+        colorRange:0,//颜色的范围，默认为0，表示全局，1为选中的组件
+        sizeRange:0,//大小的范围，默认为0，表示全局，1为选中的组件
+        stageSize: {
+          width: width,
+          height: height
+        },
+        src: null,
+        animation: null,
+        canvas: null,
+        bcolor: '#409EFF',
+        fcolor: '#409EFF',
+        scolor: '#409EFF',
+        nowFabricItem: null,
+        canvasDivStyle: {
+          height: this.Height + 'px',
+          width: this.Width + 'px',
+          border: '0px solid #001100'
+        },
+        iconDivStyle: {
+          fontSize: '24px',
+          color: '#304156',
+          marginLeft: '3px',
+          float: 'left'
+        },
+        colorSelect: {
+          zIndex: 1000,
+          position: 'fixed',
+          top: this.colorSelectTop,
+          left: this.colorSelectLeft,
+          width: '40px',
+          height: '30px'
+        },
+        MenuStyle: {
+          height: '40px',
+          width: this.Width + 'px',
+          paddingTop: '6px',
+          paddingBottom: '2px',
+          paddingLeft: '5px',
+          borderBottom: '2px solid #001100'
+        },
+        mouseFrom:{x:0,y:0},
+        mouseTo:{x:0,y:0},
+        zoom:1,
+        drawingObject:null,
+        drawType:null,
+        doDrawing:false,//绘制状态
+        step:0,//默认0，表示初始化，不用绘制
+        // items:[]
+        selectedItem:null,//默认选中的icon
+        colorType:null,//调色板名称
+        jsonData: require('../src/test.json'),//Json对象，测试用
+        //各种默认颜色以及大小
+        defaultBorderColor:'red',//默认边框线颜色
+        defaultFillColor:'rgba(255, 255, 255, 0)',//默认填充色
+        defaultFontColor:'black',//默认字体颜色
+        defaultBackgroundColor:'rgba(255, 255, 255, 0)',//默认背景填充色(文本框)
+        defaultSize:24,//默认字体大小
+        defaultBorderSize:2,//默认边线大小
+        selectedTextSize:24,//选中的字体大小
+        selectedBorderSize:2,//选中的边线大小
+        deletetips:"确认删除吗？删除后不可恢复！"//删除提示
+      }
+    },
+    created () {
+
+    },
+    mounted () {
+      // console.log(document.getElementById('tr1'))
+      // 画布初始化s
+      this.canvas = new fabric.Canvas('c',{ preserveObjectStacking: true})
+      const deleteIcon = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3C!DOCTYPE svg PUBLIC '-//W3C//DTD SVG 1.1//EN' 'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'%3E%3Csvg version='1.1' id='Ebene_1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='595.275px' height='595.275px' viewBox='200 215 230 470' xml:space='preserve'%3E%3Ccircle style='fill:%23F44336;' cx='299.76' cy='439.067' r='218.516'/%3E%3Cg%3E%3Crect x='267.162' y='307.978' transform='matrix(0.7071 -0.7071 0.7071 0.7071 -222.6202 340.6915)' style='fill:white;' width='65.545' height='262.18'/%3E%3Crect x='266.988' y='308.153' transform='matrix(0.7071 0.7071 -0.7071 0.7071 398.3889 -83.3116)' style='fill:white;' width='65.544' height='262.179'/%3E%3C/g%3E%3C/svg%3E"
+      const cloneIcon = "data:image/svg+xml,%3C%3Fxml version='1.0' encoding='iso-8859-1'%3F%3E%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 55.699 55.699' width='100px' height='100px' xml:space='preserve'%3E%3Cpath style='fill:%23010002;' d='M51.51,18.001c-0.006-0.085-0.022-0.167-0.05-0.248c-0.012-0.034-0.02-0.067-0.035-0.1 c-0.049-0.106-0.109-0.206-0.194-0.291v-0.001l0,0c0,0-0.001-0.001-0.001-0.002L34.161,0.293c-0.086-0.087-0.188-0.148-0.295-0.197 c-0.027-0.013-0.057-0.02-0.086-0.03c-0.086-0.029-0.174-0.048-0.265-0.053C33.494,0.011,33.475,0,33.453,0H22.177 c-3.678,0-6.669,2.992-6.669,6.67v1.674h-4.663c-3.678,0-6.67,2.992-6.67,6.67V49.03c0,3.678,2.992,6.669,6.67,6.669h22.677 c3.677,0,6.669-2.991,6.669-6.669v-1.675h4.664c3.678,0,6.669-2.991,6.669-6.669V18.069C51.524,18.045,51.512,18.025,51.51,18.001z M34.454,3.414l13.655,13.655h-8.985c-2.575,0-4.67-2.095-4.67-4.67V3.414z M38.191,49.029c0,2.574-2.095,4.669-4.669,4.669H10.845 c-2.575,0-4.67-2.095-4.67-4.669V15.014c0-2.575,2.095-4.67,4.67-4.67h5.663h4.614v10.399c0,3.678,2.991,6.669,6.668,6.669h10.4 v18.942L38.191,49.029L38.191,49.029z M36.777,25.412h-8.986c-2.574,0-4.668-2.094-4.668-4.669v-8.985L36.777,25.412z M44.855,45.355h-4.664V26.412c0-0.023-0.012-0.044-0.014-0.067c-0.006-0.085-0.021-0.167-0.049-0.249 c-0.012-0.033-0.021-0.066-0.036-0.1c-0.048-0.105-0.109-0.205-0.194-0.29l0,0l0,0c0-0.001-0.001-0.002-0.001-0.002L22.829,8.637 c-0.087-0.086-0.188-0.147-0.295-0.196c-0.029-0.013-0.058-0.021-0.088-0.031c-0.086-0.03-0.172-0.048-0.263-0.053 c-0.021-0.002-0.04-0.013-0.062-0.013h-4.614V6.67c0-2.575,2.095-4.67,4.669-4.67h10.277v10.4c0,3.678,2.992,6.67,6.67,6.67h10.399 v21.616C49.524,43.26,47.429,45.355,44.855,45.355z'/%3E%3C/svg%3E%0A"
+      const deleteImg = document.createElement('img')
+      deleteImg.src = deleteIcon
+      const cloneImg = document.createElement('img')
+      cloneImg.src = cloneIcon
+
+      fabric.Object.prototype.transparentCorners = true
+      fabric.Object.prototype.cornerColor = '#304156'
+      fabric.Object.prototype.cornerStyle = 'circle'
+
+      fabric.Object.prototype.controls.deleteControl = new fabric.Control({
+        x: 0.5,
+        y: -0.5,
+        offsetY: -16,
+        offsetX: 16,
+        cursorStyle: 'pointer',
+        mouseUpHandler: this.deleteObject,
+        render: this.renderIcon(deleteImg),
+        cornerSize: 24
+      })
+
+      fabric.Object.prototype.controls.clone = new fabric.Control({
+        x: -0.5,
+        y: -0.5,
+        offsetY: -16,
+        offsetX: -16,
+        cursorStyle: 'pointer',
+        mouseUpHandler: this.cloneObject,
+        render: this.renderIcon(cloneImg),
+        cornerSize: 24
+      })
+      const that = this
+
+      this.canvas.on('selection:updated', function (options) {
+        that.nowFabricItem = options.target
+        // console.log(that.nowFabricItem+"----update")
+      })
+      this.canvas.on('selection:created', function (options) {
+        that.nowFabricItem = options.target
+        // console.log(that.nowFabricItem)
+      })
+      let moveCount=1//移动次数
+      this.canvas.on('mouse:down',function (options) {
+        if(that.drawType!=null){
+          that.mouseFrom.x=options.e.offsetX/that.zoom
+          that.mouseFrom.y=options.e.offsetY/that.zoom
+          that.doDrawing=true
+          that.step=1
+        }
+      })
+      this.canvas.on('mouse:up',function (options) {
+        if(that.drawType!=null){
+          that.mouseTo.x=options.e.offsetX/that.zoom
+          that.mouseTo.y=options.e.offsetY/that.zoom
+          that.drawingObject=null
+          that.doDrawing=false
+          moveCount=1
+          if(that.drawType=="text"){
+            that.Draw(that.drawType)
+          }
+          if(that.drawType.startsWith("round-")){
+            that.DrawRound(that.drawType)
+          }
+          that.step=0
+          that.drawType=null
+          that.selectedItem=null
+        }
+      })
+      this.canvas.on('mouse:move',function (options) {
+        if(that.drawType!=null){
+          if(moveCount%2&&!that.doDrawing){
+            return
+          }
+          moveCount++
+          that.mouseTo.x=options.e.offsetX/that.zoom
+          that.mouseTo.y=options.e.offsetY/that.zoom
+          if(that.drawType!="text"){
+            that.Draw(that.drawType)
+          }
+        }
+      })
+      this.canvas.on('object:scaling', (e) => { 
+        //拉伸不变形的设置
+        var o = e.target
+        console.log(o,'yuan.gao',o.width,o.height,'yuan.gao',o.scaleX,o.scaleY)
+        if (!o.strokeWidthUnscaled && o.strokeWidth) { 
+           o.strokeWidthUnscaled = o.strokeWidth
+        } 
+        if (o.strokeWidthUnscaled) {
+          // o.width=o.width* Math.abs(o.scaleX)
+          // o.height=o.height*Math.abs(o.scaleY)
+          o.strokeWidth = o.strokeWidthUnscaled/o.scaleX
+        } 
+      })
+      // this.canvas.on('mouse:dblclick',function(options){
+      //   console.log(that.nowFabricItem)
+      //   console.log('double-click')
+      //   //
+      // })
+
+      document.body.onkeydown = function (e) {
+        console.log('key pressed, code=' + e.keyCode)
+        if (e.keyCode == 46) {
+          const type = that.nowFabricItem.type
+          if(type=="group"||type=="activeSelection"){
+            let result = confirm(that.deletetips)
+            if(result){
+              if(type=="activeSelection"){
+                that.canvas.remove(that.nowFabricItem.toGroup())
+              }else{
+                that.canvas.remove(that.nowFabricItem)
+              }
+            }
+          }else{
+            that.canvas.remove(that.nowFabricItem)
+          }
+          that.canvas.requestRenderAll()
+        }
+      }
+      // 水平及其垂直缩放锁定，中心点确定
+      // fabric.Image.fromURL('/images/1.gif', function (img) {
+      //     const oImg = img.set({ left: 150, top: 0 }).scale(0.4)
+      //     canvas.add(oImg)
+      //   })
+      // fabric.Image.fromURL('/images/1.png', function(img) {
+      //     let oImg = img.set({ left: 150, top: 0}).scale(0.4);
+      //     canvas.add(oImg);
+      //     console.log(oImg)
+      //   });
+      this.$nextTick(() => {
+      })
+    },
+    computed: {
+      
+    },
+    methods: {
+      SelectBorderSize(e){
+        this.sizeRange=0
+        this.selectedBorderSize=parseInt(e.target.value)
+        this.EditBorderSize()
+      },
+      SelectTextSize(e){
+        this.sizeRange=0
+        this.selectedTextSize=parseInt(e.target.value)
+        this.EditTextSize()
+      },
+      Draw(drawType){
+        if(this.drawingObject){
+          this.canvas.remove(this.drawingObject)
+        }
+        this.selectedItem=drawType
+        this.drawType=drawType
+        // let logtext=drawType+":"+this.doDrawing+"mouseFrom.x:"+this.mouseFrom.x+",mouseFrom.y"+this.mouseFrom.y+",mouseTo.x"+this.mouseTo.x+",mouseTo.y"+this.mouseTo.y;
+        if(this.step!=0){
+          // console.log(logtext)
+          switch (drawType) {
+            case "line"://直线
+              this.addLine(this.mouseFrom,this.mouseTo)
+              break
+            case "dotted-line":
+              this.addDottedLine(this.mouseFrom,this.mouseTo)
+              break
+            case "text"://文本
+              this.addText(this.mouseFrom)
+              this.doDrawing=false
+              break
+            case "arrow"://单箭头
+              this.addArrow(this.mouseFrom,this.mouseTo)
+              break
+            case "circle"://正圆
+              this.addCircle(this.mouseFrom,this.mouseTo)
+              break
+            case "ellipse"://椭圆
+              this.addEllipse(this.mouseFrom,this.mouseTo)
+              break
+            case "rect"://长方形
+              this.addRect(this.mouseFrom,this.mouseTo)
+              break
+            case "dialog"://对话框
+              this.addDialog(this.mouseFrom,this.mouseTo)
+              break
+            case "spacearrow"://横向箭头
+              this.addSpaceArrow(this.mouseFrom,this.mouseTo)
+              break
+            default:
+              break
+          }
+        }
+        this.canvas.renderAll()
+      },
+      DrawRound(drawType){
+        if(this.drawingObject){
+          this.canvas.remove(this.drawingObject)
+        }
+        this.selectedItem=drawType
+        this.drawType=drawType
+        if(this.step!=0){
+          const round=drawType.split('-')[1]
+          console.log(round)
+          this.addRound(this.mouseFrom,round)    
+        }
+      },
+      //绘制箭头的方法
+      //theta:角度，headlen:长度
+      drawArrow(fromX,fromY,toX,toY,theta,headlen){
+        theta = typeof theta != "undefined" ? theta : 20;
+        headlen = typeof theta != "undefined" ? headlen : 10;
+        // 计算各角度和对应的P2,P3坐标
+        let angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI,
+                angle1 = (angle + theta) * Math.PI / 180,
+                angle2 = (angle - theta) * Math.PI / 180,
+                topX = headlen * Math.cos(angle1),
+                topY = headlen * Math.sin(angle1),
+                botX = headlen * Math.cos(angle2),
+                botY = headlen * Math.sin(angle2);
+        let arrowX = fromX - topX,
+                arrowY = fromY - topY;
+        let path = " M " + fromX + " " + fromY;
+        path += " L " + toX + " " + toY;
+        arrowX = toX + topX;
+        arrowY = toY + topY;
+        path += " M " + arrowX + " " + arrowY;
+        path += " L " + toX + " " + toY;
+        arrowX = toX + botX;
+        arrowY = toY + botY;
+        path += " L " + arrowX + " " + arrowY;
+        return path;
+      },
+      //len:对话框下面的两个点间距 对话框，M是起点坐标 L是相邻点坐标 Z让路径构成闭合回路
+      drawDialog(fromX,fromY,toX,toY,len){
+        let array=[];
+        array.push({x:fromX,y:fromY});
+        array.push({x:toX,y:toY});
+        array.push({x:(toX + 2*len),y:toY});
+        if(toY>fromY){
+          array.push({x:(toX + 2*len),y:(toY + len)});
+          array.push({x:(toX -2*len),y:(toY + len)});
+        }else{
+          array.push({x:(toX + 2*len),y:(toY - len)});
+          array.push({x:(toX -2*len),y:(toY - len)});
+        }
+        array.push({x:(toX -2*len),y:toY});
+        array.push({x:(toX - len),y:toY});
+        console.log(array)
+        return array
+      },
+      drawSpaceArrow(fromX,fromY,toX,toY){
+        let array=[];
+        array.push({x:fromX,y:fromY+12});
+        if(toX>fromX){
+          if((toX-fromX)<=48){
+            array.push({x:fromX+(toX-fromX)/2,y:fromY+12});
+            array.push({x:fromX+(toX-fromX)/2,y:fromY+24});
+          }else{
+            array.push({x:toX-24,y:fromY+12});
+            array.push({x:toX-24,y:fromY+24});
+          }
+          array.push({x:toX,y:fromY});
+          if((toX-fromX)<=48){
+            array.push({x:fromX+(toX-fromX)/2,y:fromY-24});
+            array.push({x:fromX+(toX-fromX)/2,y:fromY-12});
+          }else{
+            array.push({x:toX-24,y:fromY-24});
+            array.push({x:toX-24,y:fromY-12});
+          } 
+        }else{
+          if(Math.abs((toX-fromX))<=48){
+            array.push({x:fromX-(fromX-toX)/2,y:fromY+12});
+            array.push({x:fromX-(fromX-toX)/2,y:fromY+24});
+          }else{
+            array.push({x:toX+24,y:fromY+12});
+            array.push({x:toX+24,y:fromY+24});
+          }
+          array.push({x:toX,y:fromY});
+          if(Math.abs((toX-fromX))<=48){
+            array.push({x:fromX-(fromX-toX)/2,y:fromY-24});
+            array.push({x:fromX-(fromX-toX)/2,y:fromY-12});
+          }else{
+            array.push({x:toX+24,y:fromY-24});
+            array.push({x:toX+24,y:fromY-12});
+          } 
+        }
+
+        array.push({x:fromX,y:fromY-12});
+        return array
+      },
+      confirmColor () {
+        switch (this.colorSetIndex) {
+          case 0:
+            //填充颜色
+            if(this.colorRange==0){
+              this.defaultFillColor=this.colorTmp
+            }else{
+              if(this.nowFabricItem!=null){
+                switch(this.nowFabricItem.type){
+                  case "activeSelection":
+                  case "group":
+                    for(let item of this.nowFabricItem._objects){
+                      if(item.type!="textbox"){
+                        item.set({fill:this.colorTmp})
+                      }
+                    }
+                    break
+                  case "textbox":
+                    this.nowFabricItem.set({ backgroundColor: this.colorTmp })
+                    break;
+                  default:
+                    this.nowFabricItem.set({ fill: this.colorTmp })
+                    break
+                }
+                this.canvas.renderAll()      
+              }
+            }
+            break
+          case 1:
+            //文本颜色
+            if(this.colorRange==0){
+              this.defaultFontColor=this.colorTmp
+            }else{
+              if(this.nowFabricItem!=null){
+                switch(this.nowFabricItem.type){
+                  case "activeSelection":
+                  case "group":
+                    for(let item of this.nowFabricItem._objects){
+                      if(item.type=="textbox"){
+                        item.set({fill:this.colorTmp})
+                      }
+                    }
+                    break
+                  case "textbox":
+                    this.nowFabricItem.set({ fill: this.colorTmp })
+                    break;
+                  default:
+                    break
+                }
+                this.canvas.renderAll()      
+              }
+            }
+            break
+          case 2:
+            //边框颜色
+            if(this.colorRange==0){
+              this.defaultBorderColor=this.colorTmp
+            }else{
+              if(this.nowFabricItem!=null){
+                switch(this.nowFabricItem.type){
+                  case "activeSelection":
+                  case "group":
+                    for(let item of this.nowFabricItem._objects){
+                      if(item.type!="textbox"){
+                        item.set({stroke:this.colorTmp})
+                      }
+                    }
+                    break
+                  case "textbox":
+                    break;
+                  default:
+                    this.nowFabricItem.set({ stroke: this.colorTmp })
+                    break
+                }
+                this.canvas.renderAll()
+              }
+            }
+            break
+        }
+        this.drawType=null
+        this.colorSelectShow = false
+      },
+      EditBorderSize(){
+        if(this.sizeRange==0){
+          this.defaultBorderSize=this.selectedBorderSize
+        }else{
+          this.nowFabricItem.set({strokeWidth:this.selectedBorderSize})
+          this.canvas.renderAll()
+        }
+      },
+      EditTextSize(){
+        if(this.sizeRange==0){
+          this.defaultSize=this.selectedTextSize
+        }else{
+          this.nowFabricItem.set({fontSize:this.selectedTextSize})
+          this.canvas.renderAll()
+        }
+      },
+      // 颜色输入框点击事件处理
+      colorInputClick (event, type,range) {
+        this.colorSetIndex = type
+        // console.log('------------------')
+        const colorDrawType = 'color-'+type
+        this.drawType=colorDrawType
+        this.colorSelectShow = true
+        switch(type){
+          case 0:
+            this.colorType="填充调色板"
+            break;
+          case 1:
+            this.colorType="字体调色板"
+            break;
+          case 2:
+            this.colorType="边框调色板"
+            break
+        }
+        this.colorRange=range
+        // 获取节点距离浏览器视口的高度
+        let top = event.currentTarget.getBoundingClientRect().top
+        // 获取节点距离浏览器视口的宽度
+        let left = event.currentTarget.getBoundingClientRect().left
+        // 获取滚动条滚动距离
+        const scrollTop = document.body.scrollTop || document.documentElement.scrollTop
+        const scrollLeft = document.body.scrollLeft || document.documentElement.scrollLeft
+        // 两个top相加就是节点真正的top值
+        top = top + scrollTop
+        left = left + scrollLeft
+        this.colorSelectTop = top
+        this.colorSelectLeft = left
+        // console.log(top, left)
+      },
+      //#region 具体实现画布方法
+      deleteItem () {
+        const type = this.nowFabricItem.type
+        if(type=="group"||type=="activeSelection"){
+          let result = confirm(this.deletetips)
+          if(result){
+            if(type=="activeSelection"){
+              this.canvas.remove(this.nowFabricItem.toGroup())
+            }else{
+              this.canvas.remove(this.nowFabricItem)
+            }
+          }
+        }else{
+          this.canvas.remove(this.nowFabricItem)
+        }
+        this.canvas.requestRenderAll()
+      },
+      getCopyData(event){
+        const target = this.canvas.getActiveObject()
+        const canvas = target.canvas
+        target.clone(function (cloned) {
+          cloned.left += 10
+          cloned.top += 10
+          canvas.add(cloned)
+          canvas.setActiveObject(cloned)
+        })
+        // console.log(this.nowFabricItem)
+      },
+      getClipboardFiles (event) {
+        console.log(event)
+        const items = event.clipboardData && event.clipboardData.items
+        let file = null
+        if (items && items.length) {
+          // 检索剪切板items
+          for (var i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf('image') !== -1) {
+              file = items[i].getAsFile()
+            }
+          }
+        }
+        if (!file) {
+          const text = (event.clipboardData || window.clipboardData).getData('text')
+          if (text.indexOf('data:') != 0) {
+            this.$message.error('粘贴内容不是图片')
+            return
+          }
+        }
+        console.log(file)
+        console.log(file.size)
+        // 图片压缩，系数0.6
+        const that = this
+        new ImageCompressor(file, {
+          //压缩比例，1为不压缩
+          quality: 0.6,
+          convertSize:100,
+          mimeType:'image/jpeg',
+          success(result) {
+            console.log(result)
+            let url = ''
+            let reader = new FileReader()
+            // result.type="image/jpg"
+            reader.readAsDataURL(result)
+            console.log(result.size)
+            console.log("压缩比例："+((file.size-result.size)/file.size).toFixed(4)*100+"%")
+            reader.onload = function (e) {
+              url = 'data:image/jpg;base64,' + this.result.substring(this.result.indexOf(',') + 1)
+              fabric.Image.fromURL(url, function (img) {
+                //.scale(0.4)缩放比例
+                const oImg = img.set({ left: 200, top: 200 })
+                that.canvas.add(oImg)
+              })
+            }
+          },
+          error(e) {
+            console.log(e.message);
+          },
+        });
+        // 不压缩的写法
+        // let url = ''
+        // let reader = new FileReader()
+        // reader.readAsDataURL(file)
+        // const that = this
+        // reader.onload = function (e) {
+        //   // console.log(url, "-----------")
+        //   url = 'data:image/png;base64,' + this.result.substring(this.result.indexOf(',') + 1)
+        //   fabric.Image.fromURL(url, function (img) {
+        //     const oImg = img.set({ left: 200, top: 200 }).scale(0.4)
+        //     that.canvas.add(oImg)
+        //   })
+        // }
+      },
+      compressImage(file){
+        let newfile=null
+        //图片压缩
+        new ImageCompressor(file, {
+          quality: .6,
+          success(result) {
+            console.log(result)
+            newfile=result
+          },
+          error(e) {
+            console.log(e.message);
+          },
+        });
+        return newfile
+      },
+      changeColor (color) {
+        this.colorTmp = color
+      },
+      renderIcon (icon) {
+        return function renderIcon (ctx, left, top, styleOverride, fabricObject) {
+          const size = this.cornerSize
+          ctx.save()
+          ctx.translate(left, top)
+          ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle))
+          ctx.drawImage(icon, -size / 2, -size / 2, size, size)
+          ctx.restore()
+        }
+      },
+      deleteObject (eventData, transform) {
+        //删除，先group再删除
+        const target = transform.target
+        const type = target.type
+        if(type=="group"||type=="activeSelection"){
+          let result = confirm(this.deletetips)
+          if(result){
+            if(type=="activeSelection"){
+              this.canvas.remove(target.toGroup())
+            }else{
+              this.canvas.remove(target)
+            }
+          }
+        }else{
+          this.canvas.remove(target)     
+        }
+
+        this.canvas.requestRenderAll()
+      },
+      cloneObject (eventData, transform) {
+        //复制
+        const target = transform.target
+        const canvas = target.canvas
+        target.clone(function (cloned) {
+          cloned.left += 10
+          cloned.top += 10
+          canvas.add(cloned)
+          canvas.setActiveObject(cloned)
+        })
+      },
+      boldText () {
+        //字体加粗
+        if (this.nowFabricItem.type === 'textbox') {
+          if (this.nowFabricItem.fontWeight !== 'bold') {
+            this.nowFabricItem.set({ fontWeight: 'bold' })
+            this.canvas.renderAll()
+          } else {
+            this.nowFabricItem.set({ fontWeight: 'normal' })
+            this.canvas.renderAll()
+          }
+        }
+      },
+      freeDrawingBrush(){
+        this.canvas.isDrawingMode = true
+        this.canvas.freeDrawingBrush.color=this.defaultBorderSize
+        this.canvas.freeDrawingBrush.width=this.defaultBorderSize
+      },
+      addRound(mouseFrom,value){
+        const circle=new fabric.Circle({
+          radius:15,
+          fill:'yellow',
+          strokeWidth:2,
+          stroke:'black',
+          originX:'center',
+          originY:'center'
+        })
+        const text=new fabric.Text(value,{
+          fontSize:24,
+          originX:'center',
+          originY:'center'
+        })
+        const group=new fabric.Group([circle,text],{
+          left:mouseFrom.x-15,
+          top:mouseFrom.y-15,
+          //hasControls:false
+          centeredScaling:true,
+          lockScalingFlip:true
+        })
+        group.setControlsVisibility({mtr: false,ml:false,mb:false,mr:false,mt:false})
+        this.canvas.add(group)
+        this.canvas.setActiveObject(group)
+      },
+      addText (mouseFrom) {
+        //文本框
+        const textBox = new fabric.Textbox('点此编辑',{
+          left: mouseFrom.x,
+          top: mouseFrom.y,
+          width: 150,
+          fontSize: this.defaultSize,
+          hasControls: false,
+          includeDefaultValues:true,
+          centeredScaling:false,
+          fontFamily:'楷体',
+          backgroundColor:this.defaultBackgroundColor,
+          fill:this.defaultFontColor,
+          // splitByGrapheme: true, // 拆分中文，可以实现自动换行
+        })
+        this.canvas.add(textBox)
+        this.canvas.setActiveObject(textBox)
+      },
+      addLine (mouseFrom,mouseTo) {
+        //实线
+        this.drawingObject = new fabric.Line([mouseFrom.x, mouseFrom.y, mouseTo.x, mouseTo.y], { 
+          fill: this.defaultBorderColor,
+          stroke: this.defaultBorderColor,
+          strokeWidth: this.defaultBorderSize, // 笔触宽度
+        })
+        this.canvas.add(this.drawingObject)
+        this.canvas.setActiveObject(this.drawingObject)
+      },
+      addDottedLine (mouseFrom,mouseTo) {
+        //虚线
+        this.drawingObject = new fabric.Line([mouseFrom.x, mouseFrom.y, mouseTo.x, mouseTo.y], { 
+          strokeDashArray: [10],
+          fill: this.defaultBorderColor,
+          stroke: this.defaultBorderColor,
+          strokeWidth: this.defaultBorderSize, // 笔触宽度
+        })
+        this.canvas.add(this.drawingObject)
+        this.canvas.setActiveObject(this.drawingObject)
+      },
+      addArrow (mouseFrom,mouseTo) {
+        //箭头
+        this.drawingObject = new fabric.Path(this.drawArrow(mouseFrom.x, mouseFrom.y, mouseTo.x, mouseTo.y, 20, 10),{
+          fill: this.defaultBorderColor,
+          stroke: this.defaultBorderColor,
+          strokeWidth: this.defaultBorderSize, // 笔触宽度
+        })
+        this.canvas.add(this.drawingObject)
+        this.canvas.setActiveObject(this.drawingObject)
+      },
+      addSpaceArrow(mouseFrom,mouseTo){
+        // /drawSpaceArrow
+        this.drawingObject = new fabric.Polygon(this.drawSpaceArrow(mouseFrom.x, mouseFrom.y, mouseTo.x, mouseTo.y),{
+          fill:'yellow',
+          stroke:'black',
+          strokeWidth: 2
+        })
+        this.canvas.add(this.drawingObject)
+        this.canvas.setActiveObject(this.drawingObject)
+      },
+      addDialog(mouseFrom,mouseTo){
+        //对话框
+        this.drawingObject = new fabric.Polygon(this.drawDialog(mouseFrom.x, mouseFrom.y, mouseTo.x, mouseTo.y, 30),{
+          fill:'yellow',
+          stroke:'black',
+          strokeWidth: 2
+        })
+        this.canvas.add(this.drawingObject)
+        this.canvas.setActiveObject(this.drawingObject)
+      },
+      addCircle (mouseFrom,mouseTo) {
+        //圆形
+        const left = mouseFrom.x
+        const top = mouseFrom.y
+        const radius = Math.sqrt((mouseTo.x - left) * (mouseTo.x - left) + (mouseTo.y - top) * (mouseTo.y - top)) / 2
+        this.drawingObject = new fabric.Circle({
+          left:left,
+          top:top,
+          radius:radius,
+          stroke: this.defaultBorderColor,
+          strokeWidth: this.defaultBorderSize,
+          fill: this.defaultFillColor
+        })
+        this.canvas.add(this.drawingObject)
+        this.canvas.setActiveObject(this.drawingObject)
+      },
+      addEllipse (mouseFrom,mouseTo) {
+        //椭圆
+        const left = mouseFrom.x
+        const top = mouseFrom.y
+        this.drawingObject = new fabric.Ellipse({
+          left:left,
+          top:top,
+          stroke: this.defaultBorderColor,
+          strokeWidth: this.defaultBorderSize,
+          fill: this.defaultFillColor,
+          originX: "center",
+          originY: "center",
+          rx: Math.abs(left - mouseTo.x),
+          ry: Math.abs(top - mouseTo.y),
+        })
+        this.canvas.add(this.drawingObject)
+        this.canvas.setActiveObject(this.drawingObject)
+      },
+      addRect (mouseFrom,mouseTo) {
+        //长方形
+        let left = mouseFrom.x
+        let top = mouseFrom.y
+        let width=Math.abs(mouseTo.x - mouseFrom.x)
+        let height=Math.abs(mouseTo.y - mouseFrom.y)
+        this.drawingObject = new fabric.Rect({
+          left:left,
+          top:top,
+          width:width,
+          height:height,
+          stroke: this.defaultBorderColor,
+          strokeWidth: this.defaultBorderSize,
+          fill: this.defaultFillColor,
+          noScaleCache: false,
+          lockScalingFlip:true
+        })
+        // this.drawingObject.setControlsVisibility({ml:false,mt:false})
+        this.canvas.add(this.drawingObject)
+        this.canvas.setActiveObject(this.drawingObject)
+      },
+      group(){
+        //元素合并
+        if (this.canvas.getActiveObject().type !== 'activeSelection') {
+          return;
+        }
+        this.canvas.getActiveObject().toGroup();
+        this.nowFabricItem=this.canvas.getActiveObject();
+        this.canvas.requestRenderAll();
+      },
+      ungroup(){
+        //元素拆解
+        if (this.canvas.getActiveObject().type !== 'group') {
+          return;
+        }
+        this.canvas.getActiveObject().toActiveSelection();
+        this.canvas.discardActiveObject();
+        this.canvas.requestRenderAll();
+      },
+      createJsonFile(){
+        //画布内容存成Json文件
+      },
+      createImg(){
+        //画布内容存成图片
+      },
+      ObjToJson(){
+        //canvas对象转Json数据
+        this.jsonData = this.canvas.toJSON().objects
+        console.log(this.jsonData)
+      },
+      JsonToObj(){
+        //Json数据转canvas对象
+        console.log(this.jsonData)
+        fabric.util.enlivenObjects(this.jsonData, (objects) => {
+          var origRenderOnAddRemove = this.canvas.renderOnAddRemove
+          this.canvas.renderOnAddRemove = false
+
+          objects.forEach((o) => {
+            this.canvas.add(o)
+          })
+          this.canvas.renderOnAddRemove = origRenderOnAddRemove
+          this.canvas.renderAll()
+        })
+        // this.canvas.loadFromJSON(this.jsonData, this.canvas.renderAll.bind(this.canvas));
+      },
+      //#endregion
+      onContextmenu (event) {
+        //右键菜单
+        if (!this.nowFabricItem) return
+        this.$contextmenu({
+          items: [
+            { label: '编辑文本',
+              onClick: () => {
+                //编辑文本优解
+                this.HandleForAddText()
+              },
+            },
+            { label: '边框大小',
+              children:[
+                {
+                  label:"1",
+                  onClick: () => {
+                    this.selectedBorderSize=1
+                    this.sizeRange=1
+                    this.EditBorderSize()
+                  },
+                },
+                {
+                  label:"2",
+                  onClick: () => {
+                    this.selectedBorderSize=2
+                    this.sizeRange=1
+                    this.EditBorderSize()
+                  },
+                },
+                {
+                  label:"4",
+                  onClick: () => {
+                    this.selectedBorderSize=4
+                    this.sizeRange=1
+                    this.EditBorderSize()
+                  },
+                },
+              ]
+            },
+            { label: '文本大小',
+              children:[
+                {
+                  label:"16",
+                  onClick: () => {
+                    this.selectedTextSize=16
+                    this.sizeRange=1
+                    this.EditTextSize()
+                  },
+                },
+                {
+                  label:"24",
+                  onClick: () => {
+                    this.selectedTextSize=24
+                    this.sizeRange=1
+                    this.EditTextSize()
+                  },
+                },
+                {
+                  label:"36",
+                  onClick: () => {
+                    this.selectedTextSize=36
+                    this.sizeRange=1
+                    this.EditTextSize()
+                  },
+                },
+              ]
+            },
+            { label: '字体调色板',
+              onClick: () => {
+                this.colorSetIndex = 1,
+                this.colorSelectShow = true,
+                this.colorRange=1
+              }
+            },
+            { label: '填充调色板',
+              onClick: () => {
+                this.colorSetIndex = 0,
+                this.colorSelectShow = true,
+                this.colorRange=1
+              }
+            },
+            { label: '边框调色板',
+              onClick: () => {
+                this.colorSetIndex = 2,
+                this.colorSelectShow = true,
+                this.colorRange=1
+              }
+            },
+            { label: '元素合并',
+              onClick: () => {
+                this.group()
+              }
+            },
+            { label: '元素拆解',
+              onClick: () => {
+                this.ungroup()
+              }
+            },
+            // { label: '置于顶层',
+            //   onClick: () => {
+            //     console.log(this.nowFabricItem)
+            //     this.nowFabricItem.bringToFront()
+            //   }
+            // },
+            // { label: '置于底层',
+            //   onClick: () => {
+            //     this.nowFabricItem.sendToBack()
+            //   }
+            // },
+            // { label: '置于上一层',
+            //   onClick: () => {
+            //     this.nowFabricItem.bringForward()
+            //   }
+            // },
+            // { label: '置于下一层',
+            //   onClick: () => {
+            //     this.nowFabricItem.sendBackwards()
+            //   }
+            // }
+          ],
+          event,
+          customClass: 'class-a',
+          zIndex: 3,
+          minWidth: 200
+        })
+        return false
+      },
+      HandleForAddText(){
+        const target=this.canvas.getActiveObject()
+        const type=target.type
+        let left,top
+        switch(type){
+          case "rect":
+          case "polygon":
+            left = target.left
+            top=target.top
+            break
+          case "group":
+            left = target.left
+            top=target.top
+            for(let item of target._objects){
+              if(item.type=="group"){
+                return
+              }
+            }
+            break
+          default:
+            return
+        }
+        let group
+        let origintext="点此编辑"
+        let tempText//临时文本框
+        if(target.type!="group"){
+          const options={
+            left: left,
+            top: top,
+            width:target.width,
+            fontSize: this.defaultSize,
+            hasControls: false,
+            includeDefaultValues:true,
+            centeredScaling:false,
+            fontFamily:'楷体',
+            splitByGrapheme: true, // 拆分中文，可以实现自动换行
+            fill:this.defaultFontColor,
+          }
+          // 内部文字
+          let text = new fabric.Textbox('',options);
+          group = new fabric.Group([ target, text ], {
+            left: left,
+            top: top,
+            width:target.width
+          });
+          this.canvas.add(group);
+          tempText = new fabric.Textbox(origintext, options);
+        }else{
+          origintext=target._objects[1].text
+          target._objects[1].set({
+            text: "",
+          });
+          this.canvas.requestRenderAll()
+          group = target
+          tempText = new fabric.Textbox(origintext, {
+            left: left,
+            top: top,
+            width:target._objects[1].width,
+            fontSize: target._objects[1].fontSize,
+            fill:target._objects[1].fill,
+            stroke:target._objects[1].stroke,
+            strokeWidth:target._objects[1].strokeWidth,
+            backgroundColor:target._objects[1].backgroundColor,
+            hasControls: false,
+            includeDefaultValues:true,
+            centeredScaling:false,
+            fontFamily:'楷体',
+            splitByGrapheme: true, // 拆分中文，可以实现自动换行
+          });
+        }
+        //创建临时对象
+        // let tempText = new fabric.Textbox(origintext, options);
+        this.canvas.add(tempText)
+        this.canvas.setActiveObject(tempText)
+        tempText.selectAll();
+        tempText.enterEditing();
+        tempText.on("editing:exited", () => {
+          // 退出编辑态处理，
+          // 将 text value 赋值给原始文本对象 this.item(1)
+          group._objects[1].set({
+            text: tempText.text,
+            fontSize:tempText.fontSize,
+            backgroundColor:tempText.backgroundColor,
+            fill:tempText.fill,
+            stroke:tempText.stroke
+          });
+          // 将临时文本对象干掉
+          this.canvas.remove(tempText)
+          if(target.type!="group"){
+            //非组合对象，把原本的对象也干掉
+            this.canvas.remove(target)    
+          }
+          this.canvas.setActiveObject(group)
+          this.canvas.requestRenderAll()
+        });
+      }
+    }
+  }
+</script>
+
+<style>
+  .color-div{
+    height: 20px;
+    width: 20px;
+    float: left;
+    margin-left: 10px;
+  }
+  .icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+  }
+  .active{
+    background-color: rgba(70, 88, 88, 0.37);
+  }
+</style>
